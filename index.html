@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vector Archery – משחק וקטורים</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- כותרת עליונה -->
+  <header id="game-header">
+    <div id="title-block">
+      <span id="game-icon">🏹</span>
+      <h1>Vector Archery</h1>
+      <p id="subtitle">תרגול וקטורים דו-מימדיים</p>
+    </div>
+    <div id="hud">
+      <div class="hud-item">
+        <span class="hud-label">ניקוד</span>
+        <span class="hud-value" id="hud-score">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">שלב</span>
+        <span class="hud-value" id="hud-level">1</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">ניסיונות</span>
+        <span class="hud-value" id="hud-attempts">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">רמה</span>
+        <select id="level-select">
+          <option value="1">רמה 1 – רכיבים</option>
+          <option value="2">רמה 2 – גודל וזווית</option>
+          <option value="3">רמה 3 – רוח צד</option>
+          <option value="4">רמה 4 – שתי קשתות</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- גוף המשחק -->
+  <main id="game-body">
+
+    <!-- לוח הציור -->
+    <section id="canvas-section">
+      <canvas id="gameCanvas"></canvas>
+    </section>
+
+    <!-- לוח שליטה -->
+    <aside id="control-panel">
+
+      <div id="problem-box">
+        <h2 id="problem-title">הוראות</h2>
+        <p id="problem-desc"></p>
+        <div id="wind-info" class="hidden">
+          <span class="wind-label">💨 רוח:</span>
+          <span id="wind-display"></span>
+        </div>
+        <div id="range-info" class="hidden">
+          <div>🏹 קשת א׳ – טווח מקסימלי: <strong id="range1-display"></strong></div>
+          <div>🏹 קשת ב׳ – טווח מקסימלי: <strong id="range2-display"></strong></div>
+        </div>
+      </div>
+
+      <!-- קלט רמה 1 -->
+      <div id="input-level1" class="input-group hidden">
+        <label>רכיב אופקי <em>Vx</em></label>
+        <input type="number" id="l1-vx" placeholder="Vx" step="0.5" />
+        <label>רכיב אנכי <em>Vy</em></label>
+        <input type="number" id="l1-vy" placeholder="Vy" step="0.5" />
+      </div>
+
+      <!-- קלט רמה 2 -->
+      <div id="input-level2" class="input-group hidden">
+        <div class="radio-row">
+          <label><input type="radio" name="l2mode" value="components" checked /> רכיבים (Vx, Vy)</label>
+          <label><input type="radio" name="l2mode" value="polar" /> גודל וזווית</label>
+        </div>
+        <div id="l2-components">
+          <label>Vx</label>
+          <input type="number" id="l2-vx" placeholder="Vx" step="0.5" />
+          <label>Vy</label>
+          <input type="number" id="l2-vy" placeholder="Vy" step="0.5" />
+        </div>
+        <div id="l2-polar" class="hidden">
+          <label>גודל |V|</label>
+          <input type="number" id="l2-mag" placeholder="גודל" step="0.1" min="0" />
+          <label>זווית (מעלות)</label>
+          <input type="number" id="l2-angle" placeholder="זווית °" step="1" />
+        </div>
+      </div>
+
+      <!-- קלט רמה 3 -->
+      <div id="input-level3" class="input-group hidden">
+        <p class="hint-text">הזן את ווקטור הירי (לפני השפעת הרוח):</p>
+        <label>Vx</label>
+        <input type="number" id="l3-vx" placeholder="Vx" step="0.5" />
+        <label>Vy</label>
+        <input type="number" id="l3-vy" placeholder="Vy" step="0.5" />
+      </div>
+
+      <!-- קלט רמה 4 -->
+      <div id="input-level4" class="input-group hidden">
+        <p class="hint-text">הזן שני וקטורי ירי:</p>
+        <div class="bow-group">
+          <span class="bow-label bow1">🏹 קשת א׳</span>
+          <label>V1x</label>
+          <input type="number" id="l4-v1x" placeholder="V1x" step="0.5" />
+          <label>V1y</label>
+          <input type="number" id="l4-v1y" placeholder="V1y" step="0.5" />
+        </div>
+        <div class="bow-group">
+          <span class="bow-label bow2">🏹 קשת ב׳</span>
+          <label>V2x</label>
+          <input type="number" id="l4-v2x" placeholder="V2x" step="0.5" />
+          <label>V2y</label>
+          <input type="number" id="l4-v2y" placeholder="V2y" step="0.5" />
+        </div>
+      </div>
+
+      <!-- כפתורי פעולה -->
+      <div id="action-buttons">
+        <button id="btn-fire" class="btn btn-fire">🏹 ירה!</button>
+        <button id="btn-solution" class="btn btn-secondary">💡 הצג פתרון</button>
+        <button id="btn-retry" class="btn btn-secondary">🔄 ניסיון נוסף</button>
+        <button id="btn-next" class="btn btn-next hidden">▶ שלב הבא</button>
+      </div>
+
+      <!-- משוב -->
+      <div id="feedback-box" class="hidden">
+        <div id="feedback-header"></div>
+        <div id="feedback-math"></div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- אנימציית הצלחה -->
+  <div id="success-overlay" class="hidden">
+    <div id="success-content">
+      <div id="success-emoji">🎯</div>
+      <div id="success-text"></div>
+      <div id="success-points"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
