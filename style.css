@@ -1,11 +1,10 @@
 /* =========================================
    Vector Archery – עיצוב ראשי
-   כיוון ימין לשמאל, מתאים לכיתה ט׳
+   כיוון ימין לשמאל
    ========================================= */
 
-/* ---- משתני צבעים ---- */
 :root {
-  --bg:          #f0f4ff;
+  --bg:          #eef2ff;
   --panel-bg:    #ffffff;
   --primary:     #1a3a8f;
   --accent:      #e84545;
@@ -15,21 +14,13 @@
   --gray:        #8492a6;
   --text:        #1c2b4a;
   --text-soft:   #5a6b85;
-  --shadow:      0 4px 24px rgba(26,58,143,0.10);
+  --shadow:      0 4px 24px rgba(26,58,143,0.12);
   --radius:      14px;
   --bow1:        #e84545;
   --bow2:        #1a8f6a;
-  --vec-result:  #7c3aed;
   --wind-color:  #0ea5e9;
-
-  /* גרפיים */
-  --axis-color:   #1a3a8f;
-  --grid-color:   #c9d4ef;
-  --target-color: #e84545;
-  --arrow-color:  #f39c12;
 }
 
-/* ---- איפוס ---- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -46,42 +37,43 @@ body {
    כותרת עליונה
    ========================================= */
 #game-header {
-  background: var(--primary);
+  background: linear-gradient(135deg, #0f2460 0%, #1a3a8f 60%, #2255c4 100%);
   color: #fff;
-  padding: 10px 24px;
+  padding: 8px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  gap: 12px;
+  box-shadow: 0 3px 16px rgba(0,0,0,0.28);
   flex-wrap: wrap;
+  z-index: 10;
+  position: relative;
 }
 
 #title-block {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-#game-icon { font-size: 2rem; }
+#game-icon { font-size: 1.9rem; }
 
 h1 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   letter-spacing: 1px;
 }
 
 #subtitle {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   opacity: 0.75;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
-/* HUD */
 #hud {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -89,22 +81,22 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   background: rgba(255,255,255,0.12);
   border-radius: 10px;
-  padding: 6px 14px;
-  min-width: 60px;
+  padding: 5px 12px;
+  min-width: 58px;
 }
 
 .hud-label {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   opacity: 0.8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .hud-value {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
@@ -113,13 +105,30 @@ h1 {
   color: #fff;
   border: 1px solid rgba(255,255,255,0.3);
   border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 0.85rem;
+  padding: 5px 10px;
+  font-size: 0.82rem;
   cursor: pointer;
   direction: rtl;
 }
 
 #level-select option { color: var(--text); background: #fff; }
+
+/* כפתור סיום משחק */
+.btn-end {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 3px 12px rgba(243,156,18,0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+  white-space: nowrap;
+}
+.btn-end:hover { box-shadow: 0 5px 18px rgba(243,156,18,0.6); }
+.btn-end:active { transform: scale(0.96); }
 
 /* =========================================
    גוף המשחק
@@ -127,42 +136,56 @@ h1 {
 #game-body {
   flex: 1;
   display: flex;
-  gap: 0;
   overflow: hidden;
-  max-height: calc(100vh - 72px);
+  max-height: calc(100vh - 68px);
 }
 
-/* ---- לוח הציור ---- */
+/* לוח הציור */
 #canvas-section {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 14px;
   background: var(--bg);
   overflow: hidden;
+  position: relative;
+}
+
+/* רקע אולימפי מאחורי ה-Canvas – SVG inline */
+#canvas-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cdefs%3E%3CradialGradient id='bg' cx='50%25' cy='50%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%23dce8ff'/%3E%3Cstop offset='100%25' stop-color='%23b8cdff'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='600' height='600' fill='url(%23bg)'/%3E%3C!-- Olympic rings --%3E%3Ccircle cx='180' cy='300' r='55' fill='none' stroke='%230081C8' stroke-width='11' opacity='0.22'/%3E%3Ccircle cx='260' cy='300' r='55' fill='none' stroke='%23000000' stroke-width='11' opacity='0.12'/%3E%3Ccircle cx='340' cy='300' r='55' fill='none' stroke='%23EE334E' stroke-width='11' opacity='0.22'/%3E%3Ccircle cx='420' cy='300' r='55' fill='none' stroke='%23FCB131' stroke-width='11' opacity='0.22'/%3E%3Ccircle cx='500' cy='300' r='55' fill='none' stroke='%2300A651' stroke-width='11' opacity='0.22'/%3E%3C!-- Laurel wreath outlines --%3E%3Cellipse cx='80' cy='80' rx='40' ry='15' fill='none' stroke='%23c0c890' stroke-width='2' opacity='0.4' transform='rotate(-30 80 80)'/%3E%3Cellipse cx='520' cy='520' rx='40' ry='15' fill='none' stroke='%23c0c890' stroke-width='2' opacity='0.4' transform='rotate(150 520 520)'/%3E%3C!-- Stars --%3E%3Ccircle cx='60' cy='200' r='3' fill='%23daa520' opacity='0.35'/%3E%3Ccircle cx='540' cy='150' r='3' fill='%23daa520' opacity='0.35'/%3E%3Ccircle cx='100' cy='500' r='2.5' fill='%23daa520' opacity='0.3'/%3E%3Ccircle cx='480' cy='480' r='2.5' fill='%23daa520' opacity='0.3'/%3E%3Ccircle cx='300' cy='50' r='2' fill='%23daa520' opacity='0.25'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;
+  pointer-events: none;
+  border-radius: 0;
 }
 
 #gameCanvas {
-  background: #fff;
+  background: rgba(255,255,255,0.88);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), 0 0 0 3px rgba(26,58,143,0.15);
   display: block;
   max-width: 100%;
   max-height: 100%;
+  position: relative;
+  z-index: 1;
 }
 
-/* ---- לוח שליטה ---- */
+/* לוח שליטה */
 #control-panel {
-  width: 300px;
-  min-width: 280px;
+  width: 296px;
+  min-width: 272px;
   background: var(--panel-bg);
-  border-right: none;
   border-left: 3px solid var(--gray-light);
-  padding: 18px 16px;
+  padding: 14px 14px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 11px;
   overflow-y: auto;
   box-shadow: -4px 0 20px rgba(26,58,143,0.06);
 }
@@ -171,64 +194,80 @@ h1 {
 #problem-box {
   background: var(--gray-light);
   border-radius: var(--radius);
-  padding: 14px;
+  padding: 12px;
   border-right: 4px solid var(--primary);
 }
 
 #problem-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--primary);
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 #problem-desc {
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 0.85rem;
+  line-height: 1.55;
   color: var(--text);
 }
 
+.target-coords-box {
+  margin-top: 8px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 0.82rem;
+  font-family: 'Courier New', monospace;
+  color: var(--primary);
+  border: 1px solid #c9d4ef;
+}
+
 #wind-info {
-  margin-top: 10px;
+  margin-top: 9px;
   background: #e0f5ff;
   border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 0.9rem;
+  padding: 7px 10px;
+  font-size: 0.85rem;
   color: #0c6ea0;
   border-right: 3px solid var(--wind-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .wind-label { font-weight: 700; }
+.wind-val { font-family: 'Courier New', monospace; }
 
 #range-info {
-  margin-top: 10px;
+  margin-top: 9px;
   background: #fff8e7;
   border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 0.85rem;
+  padding: 7px 10px;
+  font-size: 0.82rem;
   line-height: 1.8;
   border-right: 3px solid var(--yellow);
 }
 
-/* ---- קבוצות קלט ---- */
+/* קבוצות קלט */
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
   background: var(--gray-light);
   border-radius: var(--radius);
-  padding: 14px;
+  padding: 12px;
 }
 
 .input-group label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-soft);
 }
 
 .input-group input[type="number"] {
   width: 100%;
-  padding: 9px 12px;
+  padding: 8px 12px;
   border: 2px solid #d0d9ef;
   border-radius: 8px;
   font-size: 1rem;
@@ -236,6 +275,7 @@ h1 {
   transition: border-color 0.2s;
   text-align: center;
   direction: ltr;
+  background: #fff;
 }
 
 .input-group input[type="number"]:focus {
@@ -244,35 +284,39 @@ h1 {
   background: #f5f8ff;
 }
 
-.radio-row {
-  display: flex;
-  gap: 12px;
-  font-size: 0.85rem;
-  margin-bottom: 4px;
-}
-
-.radio-row label { cursor: pointer; display: flex; align-items: center; gap: 4px; }
-
 .hint-text {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-soft);
   line-height: 1.5;
+  background: #fff;
+  border-radius: 7px;
+  padding: 6px 9px;
 }
+
+/* כפתור מחשבון */
+.btn-calc {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #fff;
+  font-size: 0.88rem;
+  margin-top: 4px;
+  box-shadow: 0 3px 10px rgba(124,58,237,0.3);
+}
+.btn-calc:hover { box-shadow: 0 5px 16px rgba(124,58,237,0.5); }
 
 /* קשתות רמה 4 */
 .bow-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px;
+  gap: 5px;
+  padding: 9px;
   border-radius: 10px;
   background: #fff;
 }
 
 .bow-label {
   font-weight: 700;
-  font-size: 0.88rem;
-  padding: 4px 8px;
+  font-size: 0.85rem;
+  padding: 3px 7px;
   border-radius: 6px;
   display: inline-block;
 }
@@ -280,87 +324,79 @@ h1 {
 .bow1 { background: #ffe5e5; color: var(--bow1); }
 .bow2 { background: #e5f9f1; color: var(--bow2); }
 
-/* ---- כפתורים ---- */
+/* כפתורים */
 #action-buttons {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
 }
 
 .btn {
-  padding: 11px 16px;
+  padding: 10px 14px;
   border: none;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.1s, box-shadow 0.1s, opacity 0.2s;
-  letter-spacing: 0.3px;
+  transition: transform 0.1s, box-shadow 0.1s;
+  letter-spacing: 0.2px;
 }
 
 .btn:active { transform: scale(0.97); }
 
 .btn-fire {
-  background: var(--accent);
+  background: linear-gradient(135deg, #e84545, #c0392b);
   color: #fff;
-  font-size: 1.1rem;
-  box-shadow: 0 4px 16px rgba(232,69,69,0.35);
+  font-size: 1.05rem;
+  box-shadow: 0 4px 14px rgba(232,69,69,0.35);
 }
-
 .btn-fire:hover { box-shadow: 0 6px 20px rgba(232,69,69,0.5); }
 
 .btn-secondary {
   background: var(--gray-light);
   color: var(--text);
 }
-
 .btn-secondary:hover { background: #d5dcf0; }
 
 .btn-next {
-  background: var(--green);
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
   color: #fff;
-  box-shadow: 0 4px 14px rgba(46,204,113,0.35);
+  box-shadow: 0 4px 12px rgba(46,204,113,0.35);
 }
+.btn-next:hover { box-shadow: 0 6px 18px rgba(46,204,113,0.5); }
 
-.btn-next:hover { box-shadow: 0 6px 20px rgba(46,204,113,0.5); }
-
-/* ---- משוב ---- */
+/* משוב */
 #feedback-box {
   background: #f8faff;
   border-radius: var(--radius);
-  padding: 14px;
+  padding: 12px;
   border: 2px solid var(--gray-light);
-  font-size: 0.85rem;
-  line-height: 1.7;
+  font-size: 0.82rem;
+  line-height: 1.65;
   color: var(--text);
 }
 
 #feedback-header {
-  font-size: 1rem;
+  font-size: 0.96rem;
   font-weight: 700;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+  margin-bottom: 7px;
+  padding-bottom: 7px;
   border-bottom: 1px solid var(--gray-light);
 }
 
-#feedback-math {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+#feedback-math { display: flex; flex-direction: column; gap: 3px; }
 
 .fb-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 8px;
+  padding: 3px 7px;
   border-radius: 6px;
   background: var(--gray-light);
 }
 
-.fb-label { color: var(--text-soft); }
-.fb-value { font-weight: 700; font-family: 'Courier New', monospace; }
-
+.fb-label { color: var(--text-soft); font-size: 0.78rem; }
+.fb-value { font-weight: 700; font-family: 'Courier New', monospace; font-size: 0.82rem; }
 .fb-correct { background: #e8fdf1; }
 .fb-wrong   { background: #fdeaea; }
 .fb-info    { background: #e8f0fe; }
@@ -371,36 +407,176 @@ h1 {
 #success-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(26,58,143,0.55);
+  background: rgba(26,58,143,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
-  animation: fadeIn 0.3s ease;
+  z-index: 200;
+  animation: fadeIn 0.25s ease;
 }
 
 #success-content {
   background: #fff;
   border-radius: 20px;
-  padding: 40px 50px;
+  padding: 36px 48px;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.28);
   animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
 }
 
-#success-emoji { font-size: 4rem; margin-bottom: 12px; }
+#success-emoji { font-size: 3.8rem; margin-bottom: 10px; }
+#success-text  { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+#success-points { font-size: 1.05rem; color: var(--accent); font-weight: 700; }
 
-#success-text {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--primary);
-  margin-bottom: 8px;
+/* =========================================
+   מודל מחשבון
+   ========================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,20,60,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  animation: fadeIn 0.22s ease;
 }
 
-#success-points {
-  font-size: 1.1rem;
-  color: var(--accent);
+.modal-box {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px 30px;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+  direction: rtl;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  background: var(--gray-light);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box h3 {
+  font-size: 1.15rem;
+  color: var(--primary);
+  margin-bottom: 6px;
+  font-weight: 800;
+}
+
+.calc-desc {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.calc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.calc-row label {
   font-weight: 700;
+  font-size: 0.9rem;
+  width: 26px;
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
+}
+
+.calc-row input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #d0d9ef;
+  border-radius: 8px;
+  font-size: 1rem;
+  direction: ltr;
+  text-align: center;
+}
+
+.calc-row input:focus { outline: none; border-color: #7c3aed; }
+
+.calc-result {
+  margin-top: 14px;
+  background: #f3f0ff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  border-right: 4px solid #7c3aed;
+}
+
+.calc-formula {
+  font-size: 0.78rem;
+  color: #7c3aed;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 2px;
+  opacity: 0.8;
+}
+
+.calc-out {
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+/* =========================================
+   מסך סיום
+   ========================================= */
+#end-box {
+  background: linear-gradient(160deg, #0f1e5c 0%, #1a3a8f 50%, #0d2a6e 100%);
+  border-radius: 22px;
+  padding: 32px 28px;
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  max-width: 380px;
+  width: 92%;
+  color: #fff;
+}
+
+#end-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 16px;
+  color: #ffd700;
+  text-shadow: 0 2px 12px rgba(255,215,0,0.5);
+}
+
+#champion-canvas {
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  background: #fff;
+  display: block;
+  margin: 0 auto 16px;
+}
+
+#end-score-display {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ffd700;
+  margin-bottom: 4px;
+}
+
+#end-rank-label {
+  font-size: 1.1rem;
+  color: #a0bfff;
+  margin-bottom: 6px;
+  font-weight: 600;
 }
 
 /* =========================================
@@ -411,41 +587,14 @@ h1 {
 /* =========================================
    אנימציות
    ========================================= */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes popIn {
-  from { transform: scale(0.7); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50%       { transform: scale(1.08); }
-}
+@keyframes fadeIn  { from { opacity: 0; }             to { opacity: 1; } }
+@keyframes popIn   { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
 /* =========================================
    רספונסיביות בסיסית
    ========================================= */
 @media (max-width: 768px) {
-  #game-body {
-    flex-direction: column;
-    max-height: none;
-    overflow: auto;
-  }
-
-  #control-panel {
-    width: 100%;
-    min-width: unset;
-    border-left: none;
-    border-top: 3px solid var(--gray-light);
-    max-height: 55vh;
-  }
-
-  #canvas-section {
-    height: 45vw;
-    min-height: 260px;
-  }
+  #game-body { flex-direction: column; max-height: none; overflow: auto; }
+  #control-panel { width: 100%; min-width: unset; border-left: none; border-top: 3px solid var(--gray-light); max-height: 55vh; }
+  #canvas-section { height: 45vw; min-height: 260px; }
 }

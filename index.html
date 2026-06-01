@@ -22,7 +22,7 @@
       </div>
       <div class="hud-item">
         <span class="hud-label">שלב</span>
-        <span class="hud-value" id="hud-level">1</span>
+        <span class="hud-value" id="hud-level">1-1</span>
       </div>
       <div class="hud-item">
         <span class="hud-label">ניסיונות</span>
@@ -37,6 +37,7 @@
           <option value="4">רמה 4 – שתי קשתות</option>
         </select>
       </div>
+      <button id="btn-end-game" class="btn btn-end">🏆 סיים משחק</button>
     </div>
   </header>
 
@@ -56,12 +57,14 @@
         <p id="problem-desc"></p>
         <div id="wind-info" class="hidden">
           <span class="wind-label">💨 רוח:</span>
-          <span id="wind-display"></span>
+          <span class="wind-val">Vx = <strong id="wind-x"></strong></span>
+          <span class="wind-val">Vy = <strong id="wind-y"></strong></span>
         </div>
         <div id="range-info" class="hidden">
           <div>🏹 קשת א׳ – טווח מקסימלי: <strong id="range1-display"></strong></div>
           <div>🏹 קשת ב׳ – טווח מקסימלי: <strong id="range2-display"></strong></div>
         </div>
+        <div id="target-coords" class="target-coords-box"></div>
       </div>
 
       <!-- קלט רמה 1 -->
@@ -72,32 +75,22 @@
         <input type="number" id="l1-vy" placeholder="Vy" step="0.5" />
       </div>
 
-      <!-- קלט רמה 2 -->
+      <!-- קלט רמה 2 – גודל וזווית בלבד, ללא אופציית רכיבים -->
       <div id="input-level2" class="input-group hidden">
-        <div class="radio-row">
-          <label><input type="radio" name="l2mode" value="components" checked /> רכיבים (Vx, Vy)</label>
-          <label><input type="radio" name="l2mode" value="polar" /> גודל וזווית</label>
-        </div>
-        <div id="l2-components">
-          <label>Vx</label>
-          <input type="number" id="l2-vx" placeholder="Vx" step="0.5" />
-          <label>Vy</label>
-          <input type="number" id="l2-vy" placeholder="Vy" step="0.5" />
-        </div>
-        <div id="l2-polar" class="hidden">
-          <label>גודל |V|</label>
-          <input type="number" id="l2-mag" placeholder="גודל" step="0.1" min="0" />
-          <label>זווית (מעלות)</label>
-          <input type="number" id="l2-angle" placeholder="זווית °" step="1" />
-        </div>
+        <p class="hint-text">חשב את הגודל והזווית באמצעות המחשבון, ואז הזן:</p>
+        <label>גודל |V|</label>
+        <input type="number" id="l2-mag" placeholder="גודל הווקטור" step="0.01" min="0" />
+        <label>זווית (מעלות, מציר X)</label>
+        <input type="number" id="l2-angle" placeholder="זווית °" step="0.1" />
+        <button id="btn-calc" class="btn btn-calc">🧮 מחשבון פיתגורס / זווית</button>
       </div>
 
       <!-- קלט רמה 3 -->
       <div id="input-level3" class="input-group hidden">
         <p class="hint-text">הזן את ווקטור הירי (לפני השפעת הרוח):</p>
-        <label>Vx</label>
+        <label>רכיב אופקי <em>Vx</em></label>
         <input type="number" id="l3-vx" placeholder="Vx" step="0.5" />
-        <label>Vy</label>
+        <label>רכיב אנכי <em>Vy</em></label>
         <input type="number" id="l3-vy" placeholder="Vy" step="0.5" />
       </div>
 
@@ -106,16 +99,16 @@
         <p class="hint-text">הזן שני וקטורי ירי:</p>
         <div class="bow-group">
           <span class="bow-label bow1">🏹 קשת א׳</span>
-          <label>V1x</label>
+          <label>רכיב אופקי <em>V1x</em></label>
           <input type="number" id="l4-v1x" placeholder="V1x" step="0.5" />
-          <label>V1y</label>
+          <label>רכיב אנכי <em>V1y</em></label>
           <input type="number" id="l4-v1y" placeholder="V1y" step="0.5" />
         </div>
         <div class="bow-group">
           <span class="bow-label bow2">🏹 קשת ב׳</span>
-          <label>V2x</label>
+          <label>רכיב אופקי <em>V2x</em></label>
           <input type="number" id="l4-v2x" placeholder="V2x" step="0.5" />
-          <label>V2y</label>
+          <label>רכיב אנכי <em>V2y</em></label>
           <input type="number" id="l4-v2y" placeholder="V2y" step="0.5" />
         </div>
       </div>
@@ -143,6 +136,42 @@
       <div id="success-emoji">🎯</div>
       <div id="success-text"></div>
       <div id="success-points"></div>
+    </div>
+  </div>
+
+  <!-- מחשבון פיתגורס / זווית -->
+  <div id="calc-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <button id="calc-close" class="modal-close">✕</button>
+      <h3>🧮 מחשבון וקטורים</h3>
+      <p class="calc-desc">הזן את רכיבי הווקטור כדי לחשב גודל וזווית</p>
+      <div class="calc-row">
+        <label>Vx</label>
+        <input type="number" id="calc-vx" placeholder="Vx" step="0.1" />
+      </div>
+      <div class="calc-row">
+        <label>Vy</label>
+        <input type="number" id="calc-vy" placeholder="Vy" step="0.1" />
+      </div>
+      <button id="calc-compute" class="btn btn-fire">חשב</button>
+      <div id="calc-result" class="calc-result hidden">
+        <div class="calc-formula">|V| = √(Vx² + Vy²)</div>
+        <div class="calc-out">גודל |V| = <strong id="calc-mag-out"></strong></div>
+        <div class="calc-formula">θ = atan2(Vy, Vx)</div>
+        <div class="calc-out">זווית θ = <strong id="calc-angle-out"></strong>°</div>
+        <button id="calc-copy" class="btn btn-next" style="margin-top:10px">העתק לשדות הירי</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מסך סיום משחק -->
+  <div id="end-screen" class="modal-overlay hidden">
+    <div id="end-box">
+      <h2 id="end-title">🏆 אלוף הקשתות</h2>
+      <canvas id="champion-canvas" width="320" height="360"></canvas>
+      <div id="end-score-display"></div>
+      <div id="end-rank-label"></div>
+      <button id="btn-restart" class="btn btn-fire" style="margin-top:18px">🔄 שחק שוב</button>
     </div>
   </div>
 
